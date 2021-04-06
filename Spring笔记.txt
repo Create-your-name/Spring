@@ -1,0 +1,43 @@
+Spring：解决企业开发的难度 减轻项目模块之间的管理 类与类之间的管理 
+核心技术 ioc aop  实现模块.类之间的耦合度 让关系更加松散
+
+依赖：类A中使用了类B的属性或方法 叫做 类A  依赖 类B
+maven 管理jar包 管理模块管理 资源内容
+spring 管理项目之中方法
+--------------------------------------------------------------------------------
+Spring 第一个核心功能 IOC： 控制反转  描述的是 将对象的创建，赋值，管理工作都交给代码之外的容器实现 
+
+控制：创建对象 对象之间的属性赋值 对象之间的关系管理
+反转：把原来开发人员管理，将创建对象权限转移给代码之外容器实现，由容器来管理对象，创建对象，给属性赋值
+正转：开发人员在代码中用new构造对象 开发人员主动管理对象
+	Student student=new Student
+容器： 存放对象 根据需求在容器内获取对象
+
+使用IOC的理由：减少对代码的改动 实现不同的功能。解耦合！！·
+
+JAVA中创建对象的方式：
+1。构造方法
+2.反射
+3.序列化
+4.克隆
+5.IOC : 容器创建对象
+IOC的体现：
+	serlvet 1：类继承HttpServelt
+	           2：在web.xml注册servlet ，<servelet -name> myservlet <servelet -name>
+				<servelt-class>com.bjpwernode.controller.Myservlet<servelt-class>
+		3.没有创建Servlet对象 没有Myservlet myservlet=new MyServlet
+		4.Servlet 是Tomcat 创建的  Tomcat就称为容器  里面由Servlet对象
+IOC 的技术实现，
+  DI 是 ioc的技术实现，  ：依赖注入，只需要在程序中提供要使用的对象的名称就可以，
+Spring 使用DI实现IOC功能，
+-------------------------------------------------------------------------
+Spring的IOC 由spring创建对象
+实现步骤：
+1.创建maven项目 
+2.加入maven依赖
+  spring的依赖
+  junit依赖
+3. 创建类 （普通类）♥♥
+4.创建spring需要使用的配置文件※※♥♥♥♥
+  声明类的信息，这些类由spring创建和管理
+5.测试spring创建的对象。
