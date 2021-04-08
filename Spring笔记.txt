@@ -41,3 +41,102 @@ Spring的IOC 由spring创建对象
 4.创建spring需要使用的配置文件※※♥♥♥♥
   声明类的信息，这些类由spring创建和管理
 5.测试spring创建的对象。
+
+ApplicationContext 容器名=new classPathApplicationContext(文件名);  容器读取该文件 // 创建对象
+当遇见 bean标签时 通过反射机制 调用类的构造方法 创建对象 bean id 就是对象id 将对象 放在map之中
+一个bean 只能创建一个对象 ，在读取文件的同时 对象就已经创建好了
+在创建容器时 会创建配置文件的所有对象
+
+ Someservice service = (Someservice) ac.getBean("someService");
+从容器中的Map获取 someService 对象 拿到对象 赋值给service 用service 调用方法即可    
+
+Spring 默认调用的时无参构造方法
+
+
+Spring 配置名称 在项目中 默认 ApplicationContent
+
+DI-XML //给JAVA对象的属性赋值
+DI : 依赖注入，表示创建对象 给属性赋值。
+DI的实现的语法由两种：
+1.在spring的配置文件中使用 标签和 属性完成
+2.使用 spring中的注解 完成属性的赋值  基于注解的DI实现
+
+DI的语法分类：
+（1.)set注入（设置注入）： 用类的set 方法 完成属性赋值。
+	对于<property name="name" value="" />注入set方法  即是若有对应的set方法即可 实现  value 必须是字符串类型  所有值必须放在引号中 xml规则
+	1.set注入 （设置注入）：spring调用类的set方法， 你可以在set方法中完成属性赋值
+         		1.1简单类型的set注入
+                	<bean id="" class=""
+               		 <property name="属性名字" value="属性值"/>
+                	一个property 只能给一个属性赋值
+                	</bean> 
+		
+		1.2引用类型的set注入：spring调用类的set方法
+		<bean id="" class=""
+               		 <property name="属性名字" ref="属性值"/>
+                	一个property 只能给一个属性赋值
+                	</bean> 
+	2.构造注入 ，spring调用类的有参构造方法 ，创建对象 完成赋值。 
+		构造注入使用<constructor-arg>标签
+		<constructor -arg>标签属性：
+			name:表示构造方法的形参名
+			index:表示构造方法的  中形参的位置 ，参数从左往右位置是0 1 2
+			value:表示构造方法的形参是简单类型 使用value
+			ref：表示构造方法的形参是引用类型 使用ref
+	<property> 使用方式是 调用set对象
+	<property> 使用方式是 调用set对象 一种是 index 默认 形参构造方法 在xml中创建spring对象  另一种是 name=""指定名字 创建对象
+	另一种是 name=""指定名字 创建对象  另一种是 name=""指定名字 创建对象
+
+		 引用类型的自动注入：spring框架根据某些规则 可以对引用类型赋值。不用手动赋值
+           	             规则： byname  bytype
+                	        1.byname （按名称注入）：Java类中引用类型的属性名 和spring容器中 （配置文件）（bean）的id名称一样 且数据类型一直
+                                	                这样的容器中的bean ，spring能够赋值给引用类型
+                        		<bean id="xx" class="yy" autowire ="byname">
+                                       	简单类型属性赋值
+                                       	</bean>
+			即 在创建容器MAP过程中 构造类CLASS时 先进行简单类型属性赋值  
+			后 编译器扫描到autowire 自动取得在类中的引用数据类型  与xml文件中bean =“id”一一对应 后注入
+		2.bytype(按类型注入)： Java类中引用类型的数据类型 和spring容器中（配置文件）《bean》的class属性
+                	                                时同源关系的 这样bean能够赋值给引用类型
+                              		同源时一类的意思：
+                          ·		    1.java类中 引用数据类型和bean的 class值时一样的
+                              		2.java类中 引用数据类型和bean的 class值父子类关系
+                         	     3.java类中 引用数据类型和bean class 的值的接口和实现类关系的
+               			         语法：
+              		           <bean id="xx" class="yy" autowire ="bytype">
+                	                       简单类型属性赋值
+                	                       </bean>
+			即 在创建容器MAP过程中 构造类CLASS时 先进行简单类型属性赋值  
+			后 编译器扫描到autowire=”bytype“ 自动取得在类中的引用数据类型  
+			与xml文件中bean =class的一一对应 看看是否由三个对应关系的一种 有就相互对应
+--------------------------------------------------------------------------------------------------------------------------
+		1. 多个配置文件的优势
+		 1.1每个文件 的大小笔记小 效率高
+		 1.2 避免多人竞争 带来的冲突
+		项目内有多个模块 一般采用 一个模块一个配置文件
+		主文件 ：包含其他配置文件  著配置文件 不定义对象 
+		           语法：<import resource="classpath：其他配置文件的路径"/>
+		           关键字:"classpath:"表示类的路径 （class文件所在的目录）
+			在spring配置文件中要指定其他文件的路径 需要使用classpath 告诉spring去哪里加载读取文件
+	                	    <import resource="classpath:id-*"/>	//表示该id下所有的id开头的xml所有文件
+				注意：主的配置文件名称不能包含在通配符的范围内 要不然会进入到无限循环 
+（2.）基于注解的DI  通过注解 完成java对象的创建 属性赋值
+	使用注解的步骤：
+	1.加入maven的依赖 spring-context ，在你加入spring-context的同时 间接加入spring-aop的依赖  使用注解必须加入spring-aop依赖
+	2.在类中加入spring的注解 （多个不同功能的注解）
+	3.在spring的配置文件中，加入一个组件扫描器的标签，说明注解在你的项目中的位置
+        学习的注解：
+        1.@Component
+        2.@Respotory
+        3.@Service
+        4.@Controller
+        5.@value
+        6.@Autowired
+        7.@Resource
+	通过spring的注解完成java对象的创建 配置 属性 代替xml文件
+	实现步骤：
+	1.加入依赖
+	2。创建类 ，类中加入注解
+	3.创建spring的配置文件 
+	   声明组件扫描器的标签 指明注解在你项目中的位置。
+	4.使用注解创建对象，创建容器ApplicationContext
