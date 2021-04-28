@@ -1,6 +1,8 @@
 assert 关键字 用于异常处理
 enum 关键字 用于枚举
-
+	
+	即对基本数据而言  普通数据类型 就是变量保存的就是值
+	    对引用数据类型而言  引用数据类型就是创建一个堆内存 然后变量在栈内存保存的是堆内存的地址
 面向对象的设计 的特征：
 	封装性： 内部操作对外部而言不可见 ，内部操作都不可直接使用
 	继承性： 在已有结构的基础上继续进行功能的扩充；
@@ -108,6 +110,70 @@ String ： 并不算 数据类型 但是 由于JVM  可以让String和普通数�
 	"mldn " 写出来的时候 已经开出来了 一个 匿名对象  new也会开辟一个新的 堆空间
 	即在使用构造方法实例化String对象时不会自动保存到字符串池  会开辟一个新的 空间 来存放 内容
 	 public String intern（）； 手动 入字符串池
+
+	而对于String +=“ABC”  会重新创建一个匿名String 对象 指向的是"ABC" 然后str 本身保存的对象
+	       也会在字符串池中 如果String +=  出现过多次的话 那么就会有 很多的垃圾空间
+	即 不要频繁修改String内容
+     String 的方法：
+	public String  （char[] args）将字符数组 转换成字符串
+	public String  （char[] args,int offset ,int count ）将部分字符数组 转换成字符串
+	public char charAt(int index) 	获取指定索引位置的 字符
+	public char[] toCharArray ( ) 	将字符串转换成字符数组
+
+	public String  （byte[] args）将字符数组 转换成字符串
+	public String  （byte[] args,int offset ,int count ）将部分字符数组 转换成字符串
+	public byte[] getBytes();	将字符串转为字节数组
+	public byte[] getBytes(String charsetName) throws UnsupportedEncodingException	 编码转换
+	equalsIgnoreCase （String） 不区分大小写比较
+	public int compareTo （String） 字符串的大小比较
+	public int compareToIgnoreCase （String） 不区分大小写的字符串的大小比较
+	pulic bollean bolean contains(String s)判断子字符串是否存在
+	public int indexOF（String str） 从头查找指定字符串位置
+	public int indexOF（String str,int fromIndex） 从指定位置查找指定字符串位置
+	public int lastIndexOF(String str) 从后向前查找指定字符串位置
+	public int lastIndexOF(String str,int fromIndex 从指定位置向后查找指定字符串位置
+	public boolean startsWith(String str) 判断是否是以指定字符串开头
+	public boolean startsWith(String str ,int a)由指定位置 开始判断是否以str开头
+	pulic String replaceAll（String str ，String str2）String.replaceAll  将string中 所有的 str替换成str2
+	public String【】 split （String str） 按照指定的字符串进行拆分
+	public String【】 split （String str，int a） 按照指定的字符串进行拆分成指定个数
+	public String substring（int beginIndex）从指定索引截取到结尾
+	public String substring（int beginIndex，int a）从指定索引截取到结尾截取指定位置
+	public static String format（各种类型， int ，） 转换成一个字符串
+	public String concat（String str） 描述的是字符串的连接
+	public String stim（） 去除左右的空格
+	public String toUpperCase（） 转换成大写
+继承：-
+	继承的目的在于 子类可以重用父类的结构 可以作为功能的扩充
+	在子类被创建的时候  实例化了子类对象 系统也会自动调用 父类的构造方法   即 子类构造方法的第一行 自带 super（）
+	如果没有写 无参构造 那么 就得 指定 明确调用父类的 有参构造	super（）
+      Java 中 不允许多重继承 只允许 多层继承 不允许 同时有多个 父类
+	继承一旦发生了	 所有的操作都可以被子类使用了	子累会维持父类的现有功能。
+      如果 子类不满意 父类的功能需求：则
+	 就会发生 方法 覆盖： 保留已有的方法名称，然后进行覆写
+			方法名称  参数 都一样 就叫覆写          	意义：优化父类方法
+	如果想要 父类的方法 也可以 用super.方法 来执行
+	public > default >private  
+	在覆写之中 访问权限只能越来越大 不能越来越小  即 父类 方法为 public 子类方法 不可以为 private
+	权限只能 越来越 松 不能越来越严格
+final：  最后的方法 变量 类   不能被覆写和继承
+	可以用final 来定义常量， 定义了之后 就不会在变化   常量定义 要求 ！！！全部大写 、
+
+Annotation：  以注解 实现程序开发。 
+		@Override    覆写	在明确有覆写的方法上 追加一个@Override
+		@Deprecated  过期操作  在一个软件项目的开发过程中 有个方法 新版本 不适应  老版本需要有 则 使用 过期操作
+		@SuppressWarings   压制警告  让警告信息不出现 不骚扰你QAQ
+
+多态： 
+	方法的多态性：
+		方法的重载： 同一个方法名  根据传入的参数个数的不同   实现不同的功能
+		方法的覆写：由于类的不同  实现不同的功能
+	对象的多态性：父子实例之间的转换处理
+		对象向上转型：  父类  父类实例 =子类实例   //自动完成转换    优势：可以对参数进行 统一的设计 更容易写出 多态性好的代码     接受和 返回参数的统一性
+		对象乡下转型  子类 子类实例 =（子类） 父类实例  强制转换
+
+instanceof ：
+	判断某个实例是否是某个类的对象 通过instanceof语法来实现
 使用单元测试
 1.加入junit依赖
 2.创建测试作用的类 .在src/text/java 目录中创建类
