@@ -1,0 +1,19 @@
+把mybatis 框架和spring集成在一起   像一个框架一样使用   	技术IOC
+将 mybatis 框架中的对象 交给spring统一创建 开发人员从spring中获取对象
+
+mybatis使用步骤
+1.定义dao接口  
+2.定义mapper文件
+3.定义mybatis的住配置文件
+4，创建dao的代理对象
+
+如何使用dao对象 ， 需要使用getMapper 方法
+怎么才能使用getMapper（）方法  
+1.获取sqlSession对象  需要使用SqlSessionFactory的 openSession（）方法
+ 创建 SqlSessionFactory 通过读取mybatis 的主配置文件 能够创建 SqlSessionFactory对象
+
+即 让spring创建 
+1.独立的连接池对象  使用阿里的druid连接池
+2.SqlSessionFactory对象
+3.创建出dao对象
+学习的是以上三个对象的创建语法  使用的是xml的bean标签

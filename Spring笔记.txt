@@ -351,10 +351,72 @@ args 内就是方法的参数
 	2.在方法前后 都能增强功能
 	3.控制目标方法是否被调用执行
 	4.修改原来的目标方法的执行结果 影响最后的调用结果
-   环绕通知， 等同于jdk的动态代理 。影响最后的调用结果 
+   环绕通知， 等同于jdk的动态代理 。影响最后的调用结果  等同于 InvocationHandler接口    
    
    参数：ProceedingJoinPoint  等同于 Method invode
 		作用：执行目标方法
    返回值： 就是目标方法的执行结果，可以被修改。
    ProceedingJoinPoint pjp   //    pjp.proceed();   等价于Method.invoke();
   //目标方法的前  后 加功能    类似于jdk的动态代理 写代码就行
+
+  环绕通知：将目标方法的执行过程放到@Around 声明的方法之中  就是方法是Around 声明后的方法一起执行
+	声明了Around方法的  函数  将在函数内部 完成对目标方法  execution指向的方法 的实现
+
+4.异常通知：
+	1. public   2.没有返回值  3. 方法名自定义   4.方法自带Exception参数 如果有就是JoinPonint
+	
+	@AfterThrowing :异常通知 
+		属性：1.value 切入点表达式
+		          2. throwing  自定义的变量，表示目标方法抛出的异常对象。  变量名必须和方法的参数名一样
+	特点：
+	1.在目标方法抛出异常时执行的
+	2.可以做异常的监控陈序， 监控目标方法执行时是不是有异常。
+	   如果有异常，可以发送 邮箱，或短信
+ 	执行过程就是：
+	try{
+	    //业务方法
+	}catch(Exception e){
+		myAfterThrowing    		//所声明的异常通知处理方法
+		}
+
+5.最终通知：
+	1. public   2.没有返回值  3. 方法名自定义   4.方法自带Exception参数 如果有就是JoinPonint
+	
+	@After：最终通知 
+	      属性： value   切入点表达式
+	      位置： 在方法的上面
+	特点：
+	1.总是会执行
+	2.在目标方法之后执行的
+
+	一般是用于资源清除工作  	就算是 代码报错 也会执行	
+类似于：  try{
+	    //业务方法
+	}catch(Exception e){
+		myAfterThrowing    		//所声明的异常通知处理方法
+	}fiannly{
+	//最终通知		总是会被执行
+	}
+
+6.@Pointcut
+如果在一个切面类中 包含了 很多个指向同一个切点 方法 的 话   就可以使用@Pointcut   来一起定义切入点
+	属性：
+	       value： 切入点表达式
+	位置：在自定义的方法上面
+	
+	特点：
+	  当使用@Pointcut定义在一个方法的上面，这个方法的名称就是切入点表达式的别名
+	  其他的通知中，value属性就可以使用这个方法名称 ，代表切入点表达式
+	
+	上面有了Ponintcut  就代表 这个方法 指向了 excution 切入点表达式里面的方法
+
+
+
+目标类没有接口 就是是使用cglib动态代理 spring 框架会自动使用
+如果有接口 那么就是 使用jdk动态代理
+
+如果想要 有接口的类 同时使用cglib代理的话   就在配置文件中加入proxy-target-class="true"  这样就是告诉spring使用cglib代理
+则 <aop:aspectj-autoproxy proxy-target-class="true">
+
+
+ 
