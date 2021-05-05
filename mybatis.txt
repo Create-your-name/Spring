@@ -1,0 +1,28 @@
+增强的 JDBC  操纵数据库
+	三层架构 ：界面层      业务逻辑层 	 数据访问层
+	
+	界面层  接受用户的数据	显示处理结果	（controller 包）
+	业务逻辑层   处理业务逻辑  接受 界面层传来的数据	 计算逻辑 调用数据库 获取数据（service 包）
+	数据访问层	完成对数据库的 增删 改查	（Dao类）
+	
+	类的交互
+	用户使用界面层  -->业务逻辑层 -->数据访问层 （持久层 ）-->数据库(mysql)
+
+	三层 处理的框架
+	界面层 --servlet---springmvc
+	业务逻辑层 --service类 --spring
+	数据访问层 --dao类 --mybatis  
+
+2.框架
+	框架 规定好了 规则  将 我写出来的代码 识别 并且 排版成功
+	1) sql  mapper ：sql映射
+		可以吧表中的一行数据 映射为 一个java对象，操作这个对象 就相当于操作表中的数据
+	2）Data Access Objects （DAOs） ：数据访问，对数据 进行 增删改查
+
+mybatis 提供 功能：
+	1.创建 Connuection ，Statement ,Resultset的能力 不用 开发人员创建对象
+	2.提供 执行sql语句的能力
+	3. 提供循环 ，吧sql的结果转化为java对象 List集合的能力
+	4.提供 关闭资源的能力  不用手动关闭 Connuection Statement 
+	5.开发人员做的事 ：提供 sql语句
+过程  ：开发人员 提供 sql语句 --mybatis 处理sql  --开发人员得到List集合 或者java对象 （表中的数据）
