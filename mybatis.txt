@@ -25,4 +25,19 @@ mybatis 提供 功能：
 	3. 提供循环 ，吧sql的结果转化为java对象 List集合的能力
 	4.提供 关闭资源的能力  不用手动关闭 Connuection Statement 
 	5.开发人员做的事 ：提供 sql语句
+
+实现步骤：
+1.新建student表
+2.加入maven的mybatis 坐标 ，mysql驱动坐标
+3.创建实体类  Student --保存表中的一行数据
+4.创建持久层的dao接口 ，定义操作数据库的方法
+5. 创建一个mybatis的 配置文件   sql映射文件  一个表一个 sql 映射文件   文件为xml
+	5.1）在接口所在的目录中，
+	5.2）文件名和接口保持一致
+
+6.创建 mybatis的主配置文件 ：
+	一个项目就一个主配置文件
+	主配置文件 提供 数据库的连接信息 和 sql映射文件的 位置信息
+7.创建使用mbatis类
+ 	通过mybatis 访问数据库
 过程  ：开发人员 提供 sql语句 --mybatis 处理sql  --开发人员得到List集合 或者java对象 （表中的数据）
