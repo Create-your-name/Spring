@@ -63,10 +63,30 @@ mybatis 提供 功能：
 					      从类路径的路径信息开始
 			napper  一次只能指定一个 文件
 
-
+	4.查询 是 sqlSession.selectList(new SqlSession); 方法
+	  插入  是 sqlSession.insert(new SqlSession   , 要插入的对象);
 
 （2）	配置日志功能
 	<settings>
 		<setting name ="logImpl" value ="STDOUT_LOGGING"  />
 	</settings>   
 	放入主配置文件即可
+
+第二章 类的介绍：
+	1）Resources ：mybatis的 一个类 负责读主配置文件
+	InputStream in =Resoruces.getResourceAsStream("mybatis.xml");
+	2）SqlSessionFactoryBuilder ：创建SqlSessionFactory对象：
+     	 SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+	创建SqlSessionFactory对象
+      	 SqlSessionFactory factory- = builder.build(in);
+	3） SqlSessionFactory ：重量级对象 ，耗时长  整个项目只有一个
+	SqlSessionFactory ：接口 接口实现类： DefaultSqlSessionFactory
+	SqlSessionFactory 作用: 获取SqlSession 对象 SqlSession sqlSession = factory.openSession();
+	openSession 方法说明：
+	1. 无参 获取非自动提交事务的 SqlSession对象
+	2. openSession （boolean ）：. openSession （true） 获取自动提交事务的SqlSession
+				openSession （false） 非自动提交事务的SqlSession
+	4）SqlSession：
+	SqlSession：接口 定义了 操作数据的方法 ：例如 selectOne（）
+	使用要求： SqlSession对象 不是线程安全的 需要在方法内部使用 ，在执行sql语句之前 ，使用openSession()获取 SqlSession
+	执行sql后 需要关闭  执行 SqlSession。close（） 保证使用是线程安全的
