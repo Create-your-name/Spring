@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--环境配种：数据库的连接信息
+        default:必须和某个environment的 id值一样。
+        告诉mybatis 使用哪个数据库的连接信息 访问那个数据库
+    -->
+    <environments default="development">
+        <!--environment： 一个数据库信息的配置 ，环境
+            id：唯一值  ，自定义 ，表示环境的名称
+                    id:表示 线上的数据库 是项目真实使用的库
+        -->
+        <environment id="development">
+            <!-- transactionManager ：mabatis 的 事务类型
+                type: JDBC  (表示jdbc中的 Connection对象的 commit ，rollback作为事务处理)
+               -->
+            <transactionManager type="JDBC"/>
+            <!--
+                dataSource： 表示数据源，连接数据库的
+                type：表示数据源的类型 ，PoOLED  表示使用连接池
+            -->
+            <dataSource type="POOLED">
+                <!--
+                    driver ，user ，username  ，password  是固定的 不能自定义的
+                    driver ：数据库1 驱动类名
+                -->
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <!--链接数据库的 url字符串-->
+                <property name="url" value="jdbc:mysql://localhost:3306/spring?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;useSSL=false"/>
+                <!--访问数据库的用户名-->
+                <property name="username" value="root"/>
+                <!--密码咯-->
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--
+        sql  mapper （sql映射文件）的位置
+    -->
+    <mappers>
+        <!--一个mappers  指定一个文件的位置
+            从类路径开始的路径信息。   target/ clasess （类路径）
+        -->
+        <mapper resource="mybatis/domain/Dao/StudentDao.xml"/>
+    </mappers>
+</configuration>
+<!--mybatis的 主配置文件： 主要定义了 数据库的配置信息  sql映射文件的 位置
+    1. 约束文件
+        <!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+       mybatis -3-config-dtd : 约束文件的名称
+    2. configuration 根标签
+-->

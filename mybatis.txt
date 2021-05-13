@@ -1,4 +1,4 @@
-增强的 JDBC  操纵数据库
+ 增强的 JDBC  操纵数据库
 	三层架构 ：界面层      业务逻辑层 	 数据访问层
 	
 	界面层  接受用户的数据	显示处理结果	（controller 包）
@@ -90,3 +90,78 @@ mybatis 提供 功能：
 	SqlSession：接口 定义了 操作数据的方法 ：例如 selectOne（）
 	使用要求： SqlSession对象 不是线程安全的 需要在方法内部使用 ，在执行sql语句之前 ，使用openSession()获取 SqlSession
 	执行sql后 需要关闭  执行 SqlSession。close（） 保证使用是线程安全的
+
+
+	对于实现Dao接口后 如何解耦：
+		StudentDao dao =new StudentDaoImpl（）；
+		调用之后   dao对象 类型是 StudentDao  	路径为 namespace
+	方法名称 就是 mapper文件中的 id值
+	
+	通过方法的返回值就可以确定MyBatis调用的是SqlSession中的方法
+		如果返回值是 List 调用的就是selectList（）
+		如果返回的是int 或者非List  看mapper 文件中的标签  就会调用 insert   ， uodate 等方法
+
+
+	mybatis的 动态代理：mybatis 根据dao的方法调用 获取 sql语句的信息
+		mybatis 根据dao 接口 创建出接口的实现类  and 对象
+		完成SqlSession调用方法，访问数据库
+
+第三章：
+	1.动态代理： 使用SqlSession.getMapper（dao 接口 .class） 获取这个dao接口的对象
+	2.传入参数： 从java代码中把数据传入到mapper文件的sql语句中。
+		2.1）parameterType  :  写在mapper文件中的   一个属性  。表示dao接口中方法的参数的 数据类型	（指明一个简单类型的参数）
+			例如：StudentDao接口
+			public 	Student 	SelectStudentById（Integer  	id）
+				如何让限制Dao接口的 xml 知道 传入的 是 Integer 类型的对象
+				在xml中的 对于	<select>    语句中   加上 parameterType ="对应类型的   在java包中的 全限定名称"	 或者是mybatis定义的别名
+					数据类型在 mybatis 中的别名 在 mybatis对于官方文档的第十五页有  对应表
+				在mapper文件中获取简单了下的一个参数值： 使用#{ 任意字符 }
+
+			使用#{ }之后 	mybatis执行sql是使用的jdbc中的PrepareStatument对象
+				mybatis：执行下列代码：
+				  1.mybatis 创建Connection  ，	PreparedStatement对象
+				     String sql ="select id,name,email, age,for student where id =?";
+				     preparedStatement pst =con.preparedStatement( sql );
+				    pst.setInt (1,1001);
+
+				2.执行sql封装为  resuletType="sql 语句中的 对于的 返回对象的类型的   绝对路径"
+				  ResultSet  rs =ps.executeQuery();
+				  while(rs.next()){
+				//从数据库获取表的一行数据  存在  相对的 java对象属性中
+				}
+				return  对象; 	//给了 对于的 方法调用的返回值
+		2.2）多个参数 ：使用@Param命名参数
+			接口 public List <Student>  selectMulitParam(@Param ("myname")  String name , @Param ( "myage" ) Integer age )
+			使用@Param（“参数名”）	String name
+			   例如：
+			     select * from student where name=#{myname}  or age= #{myage}  //		#{中为 注释内的 对于字符串}
+		2.3）用对象 来传递 参数	，使用java对象的属性值 ，作为参数实际值
+			使用对象语法： #{属性名 ，javaType =类型名称 ，jdbcType=数据类型} 很少用
+			javaType：指java中的属性数据类型
+			jdbcType：在数据库中的数据类型
+			      :    #{paramName, javaType = "全限定名称（绝对路径）" , jdbcType =“mybatis中的 定义的 可查的 数据库类型的名字” }
+			例如： #{paramName, javaType =java.lang.String, jdbcType =VARCHAR }
+		    简化方式 （常用）：
+			#{属性名}	,javaType ,jdbcType的值mybatis  反射获取  不要提供 
+		2.4）按位置传值 :
+			 public List <Student>  selectStudent( String name , Integer age );
+				//mybatis  3.4 之前   使用 #{0}  , #{1}
+				mybatis 3.4 之后 使用#{arg0}  ,#{arg1}
+			一样  是 name = #{ arg0}     age = # { arg1 }
+		2.5) 使用 Map 存放多个值
+			 public List <Student>  selectStudent(Map<String , Object> map );   	//常用
+			
+		      Map<String ,Object >date =new HashMap<>();
+		     date.put ("myname",张三)
+		     date .put ("age" ,28)
+			select 中：
+				name =#{myname}	age=#{age}	myname  ,age 分别为 Map 中的 key
+
+	3. # 和 $ 的区别
+		# ：占位符： 告诉mybatis 使用实际的参数值代替 。 并使用PrepareStatement 对象执行sql语句  ，#{...} 代替 sql语句中的 "?" 这样做更安全 更迅速
+			执行效率高   避免sql 注入	安全性更高	（代表的是值）
+		$ :  字符串的连接 和替换   不是使用问号 来代替    使用 字符串的连接 和替换		使用的是id ="" =“传入的值”
+			使用的是Statement 对象执行sql  ，效率比PreparedStatement 低
+			#使用的是 预编译的操作对象   $ 可以sql注入
+		
+			

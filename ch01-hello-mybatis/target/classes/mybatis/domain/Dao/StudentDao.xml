@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--以上为：
+            1.指定约束文件              mybatis-3-mapper.dtd约束文件的名称  扩展名维dtd
+            2.作用： 限制检查 在当前文件中出现的名称中出现的标签  属性符合 mbatis 标签的 约束
+            以上格式是固定的
+-->
+<mapper namespace="mybatis.domain.Dao.StudenDao">
+
+    <!--
+            3. mapper 是当前文件的根标签，必须的
+            namespace： 叫做命名空间，唯一值，可以是自定义的字符串
+               要求使用 dao接口的全限定名称
+
+               //绝对路径   包名+类名
+
+-->
+
+    <select id="selectStudents" resultType="mybatis.domain.Student">
+    select  id,name ,age from student order by id
+    </select>
+    <!--
+    在当前文件中，可以使用特定的标签，表示数据库的特定操作。
+    <select>:表示执行查询
+    <update>:表示更新 数据库的操作  在 <updata>标签中 写的是 updata sql语句
+    <insert>:表示插入  放入的 是insert语句
+    <delete>:表示删除  执行的是delete语句
+    -->
+    <insert id="insertStudent">
+        insert  into student values (#{id},#{name},#{age})
+    </insert>
+</mapper>
+<!--sql映射文件 ：写 sql语句 mybatis会执行sql-->
