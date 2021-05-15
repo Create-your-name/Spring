@@ -163,5 +163,119 @@ mybatis 提供 功能：
 		$ :  字符串的连接 和替换   不是使用问号 来代替    使用 字符串的连接 和替换		使用的是id ="" =“传入的值”
 			使用的是Statement 对象执行sql  ，效率比PreparedStatement 低
 			#使用的是 预编译的操作对象   $ 可以sql注入
+
+		$ :可以替换表名 或者 列名  ，确定数据是安全的 就可以使用$
+
+		# 和 $的 区别
+		1.  #是使用？ 占位符  在 sql中 做占位   使用PrepareStatement 对象执行 sql  效率高
+		2.  # 能够避免 sql注入  更安全
+		3.  $ 不使用占位符 ，字符串连接方式，使用Statement 对象执行sql   效率低
+  		4.  $ 有sql注入的风险 ，缺乏安全性 
+		5.  $ 可以替换 列名或者表名
+	4.使用mybatis的动态代理   使用方式：
+		要求：
+		       1.dao接口和 maper文件放在一起 同个目录 
+		       2.dao接口和mapper文件名称一致
+		       3. mapper 的namespace 的值是dao接口的 全限定名称
+		       4.mapper文件中的 <select>,<insert> <delete> 等的id 是接口中的方法名称
+		       4. dao接口 不要使用重载方法，不要使用同名的，不同参数的方法 
+		具体：在java代码中		传入实际的值的方式
+			1.一个简单类型的参数：#{简单类型的 标识符}
+			2.多个简单类型的参数：使用@Param（“自定义名称”）
+			3.使用一个java对象，对象的属性值作为mapper文件的找到参数，#{java对象的 属性名称}
+			4.使用参数位置，语法 #{arg0} #[arg 1}
+			5.使用map作为参数	#{map的key}
+
+		使用动态代理的方法
+			1.获取SqlSession对象： SqlSessionFactory.openSession
+			2.使用getMapper方法 获取某个接口的对象 ， sqlSession.getMapper（接口.class）
+			3.使用dao接口的方法 ，执行xml  maper文件中的 sql语句
 		
+		resultType  是结果类型	第一种：赋值全限定名称	第二种：别名
+		
+		定义自定义类型的别名：
+		   1)在mybatis主配置文件中定义 ，使用<typeAlias>定义别名
+			例如：<typeAliases>		type  :  全限定名称    alias ：别名
+				<typeAlias type="" alias=""/>
+				</typeAliases>
+		     第二种方式：
+			<package>  name是包名  这个包中的所有类  ，类名就是别名（类名不区分大小写）
+				例如：
+				<package>  name="全限定名称 （绝对路径）"
+		   2）可以在resultType中使用 自定义别名	
+		   3) 返回Map
+		    《resultMap》 中间写 列代码 《/resultMap》
+		<resultMap  id="标识符"  type="所指的类的 绝对路径">
+			1.列名 是map的key 列值是map的value			
+			2.最多返回一行记录，多余一行是错误
+		注解列	列名 和ava属性名的关系
+			注解列：用id标签
+			column：列名
+			property：java类型的属性名
+		! ! !MAP中主键！！！的声明		例：<id column="id" property="id">
+		    非主键列	使用result
+				例：
+		! ! ！ MAP中非主键的声明 ! ! !		<result column="name" property="name">
+		4） 可以resultType  代表着返回值 可以 返回 mabatis 中 数据类型的 别名
+		            resultType  代表在mybatis文件中声明的 resultMap类型 中的属性 对于
+			resultMap 中的 type指定的类名 中的属性 为property 		result所对于的是 数据库中的 属性名
+
+		列名和属性名不一样 第一中方式  ：用resultMap
+				第二种方式：resultType (所指的包不一样的名字)	则在select语句中 要用 id as  Type包中的属性名 来代替别名
+	4.like（模糊查询）
+		第一种方式：
+			一样是 在select 里面 用#{} 占位符 来代替 要传入的参数
+			select   id ,name ,email ,age from student where name like #{name}  name =' "李" ' 	传入一个 字符  
+		第二种方式：
+,			name是值  在mapper 中 拼接	like "%"  李  "%"
+			select   id ,name ,email ,age from student where name like "%"  #{name}  "%"	
+
+	5.动态sql		(需要使用java对象作为参数)
+		sql语句的内容是变化的，根据条件获取到不同的sql语句		主要是where部分发生变化
+	动态sql的实现，使用的是mybatis提供的标签，<if>,  <where>  ,<foreach>
+		5.1<if>是判断条件的
+			语法<if text ="判断java对象的属性值">
+			     部分sql语句
+			<if>
+				例：<if ：text  =“使用参数java对象的属性值作为判断对象， 语法  属性  =xxx值”>
+				       <if text= ”name ! =null  and name !=' '   ”>
+					name = #{ name }
+					</if>	
+		5.2 <where>  用来包含 多个 <if>  当多个if有一个成立的，<where> 会自动增加一个where 关键字， 并去掉if多余的 or  或者 and
+			使用格式： where :  <where> <if>...<where>
+			在sql  语句中 不需要写 where  会自动 加入 where 关键字
+'			并且会自动消去 or  和 and
+		
+		5.3 <foreach>循环java中的数组 ,list 集合。主要用在sql的in 语句上
+			例：学生id 是 1001  1002 1003 的三个学生
+			select $ from student where id in (1001,1002,1003)
+			public List<Student> selectFor	(List<Integer> idList)
+
+				<foreach collection=""  item="" open="" close=""  separator="">   </foreach>
+				item:自定义的 ，表示数组和集合成员的变量
+				open： 循环开始的字符
+				close： 循环结束时的字符
+				separator：集合成员之间的分隔符
+		5.4动态sql之代码片段	：	常用的sql语句可以用代码片段包含起来 方便重复使用
+			<sql   id ="标识符">
+				select id ，name ，email，age from student
+				</sql>
+		
+			在想用的地方 用<include refid ="标识符">放进来
 			
+		 	5.4.1 先使用<sql id ="标识符">    sql语句   表名 字段  </sql>
+			5.4.2 再使用 <include refid=“id的值”>
+
+
+	五：
+	1.数据库的属性配置文件：把数据库连接信息放到一个单独的文件中。和mybatis主配置文件分开。
+	目的是便于修改，保存，处理多个数据库的信息。
+		1）在resource目录中定义一个属性配置文件，xxx.properties ,例如jdbc,properties
+		在属性配置文件中，定义数据，格式是key=value
+		key：一般使用。多级目录
+		如：
+			jdbc。driver=com.mysql.jdbc.Driver
+		2)在mybatis的主配置文件，使用<property> 指定文件的位置
+		在需要使用值的 地方 ,${key}
+	《properties  resource=“标识符”》
+		早要使用的地方 用${标识符.属性名}
