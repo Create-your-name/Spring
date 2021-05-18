@@ -279,3 +279,20 @@ mybatis 提供 功能：
 		在需要使用值的 地方 ,${key}
 	《properties  resource=“标识符”》
 		早要使用的地方 用${标识符.属性名}
+
+	2. 指定多个mapper文件
+		1.<mapper resource=" 绝对路径">	用多个mapper文件来包含路径的位置
+
+		2.使用包名		name=mapper文件所在的包名
+		  <package name ="包的路径">
+			此方法 这个包中所有xml文件 都可以 一次加载到mybatis文件之中
+			要求：1，mapper文件需要和接口名称一样 区分大小写的一样、
+			         2，mapper文件和dao接口需要在同一个目录
+	第六章：PageHelper
+		PageHelper做数据分页
+			在mybatis.xml中   在java环境配置的前面   加入Plugin配置（依赖）：过滤器
+			<plugins>
+				<plugin interceptor="com.github.pagehelper.PageInterceptor">
+				</plugins>
+			使用PageHelper.starPage 静态方法 
+				在执行 dao,方法的时候  在前面调用 PageHelper.starPage(页，页的数量):

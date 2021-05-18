@@ -3,48 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <!--环境配种：数据库的连接信息
-        default:必须和某个environment的 id值一样。
-        告诉mybatis 使用哪个数据库的连接信息 访问那个数据库
-    -->
     <environments default="spring">
-        <!--environment： 一个数据库信息的配置 ，环境
-            id：唯一值  ，自定义 ，表示环境的名称
-                    id:表示 线上的数据库 是项目真实使用的库
-        -->
         <environment id="development">
-            <!-- transactionManager ：mabatis 的 事务类型  mybatis 提交事务，回顾事务的方式
-                type: 1.JDBC  (表示jdbc中的 Connection对象的 commit ，rollback作为事务处理)
-                2.MANAGED  ：把mybatis事务处理委托给其他容器（服务器软件 ，一个框架）
-               -->
             <transactionManager type="JDBC"/>
-            <!--
-                DataSource：表示数据源，java体系中，规定实现了javax。sql。DataSource接口的都是数据源
-                                数据源表示实现Connection对象的
-                type：表示数据源的类型 ，PooLED  表示使用连接池      2)UPOOLED:不使用连接池 ，在每次执行sql语句，先创建连接，执行sql，在关闭连接，mybatis会创建一个UnPooledDataSource，管理Connection对象
-            -->
             <dataSource type="POOLED">
-                <!--
-                    driver ，user ，username  ，password  是固定的 不能自定义的
-                    driver ：数据库1 驱动类名
-                -->
                 <property name="driver" value="com.mysql.jdbc.Driver"/>
-                <!--链接数据库的 url字符串-->
                 <property name="url" value="jdbc:mysql://localhost:3306/spring"/>
-                <!--访问数据库的用户名-->
                 <property name="username" value="root"/>
-                <!--密码咯-->
                 <property name="password" value="123456"/>
             </dataSource>
         </environment>
     </environments>
-    <!--
-        sql  mapper （sql映射文件）的位置
-    -->
     <mappers>
-        <!--一个mappers  指定一个文件的位置
-            从类路径开始的路径信息。   target/ clasess （类路径）
-        -->
         <mapper resource="org/mybatis/example/BlogMapper.xml"/>
     </mappers>
 </configuration>

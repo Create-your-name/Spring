@@ -1,4 +1,4 @@
-Spring：解决企业开发的难度 减轻项目模块之间的管理 类与类之间的管理 
+ Spring：解决企业开发的难度 减轻项目模块之间的管理 类与类之间的管理 
 核心技术 ioc aop  实现模块.类之间的耦合度 让关系更加松散
 
 依赖：类A中使用了类B的属性或方法 叫做 类A  依赖 类B
@@ -418,5 +418,33 @@ args 内就是方法的参数
 如果想要 有接口的类 同时使用cglib代理的话   就在配置文件中加入proxy-target-class="true"  这样就是告诉spring使用cglib代理
 则 <aop:aspectj-autoproxy proxy-target-class="true">
 
+	!!!!!------------------------!!!! Spring整合mybatis!!! --------------------------------------!!!
 
+使用IOC  （创建对象）：（把mybatis框架中的对象 交给 spring 统一创建）
+	让IOC创建对象   将mybatis中的对象交给spring统一创建 ，开发人员从spring中获取对象
+	
+	在做大型文件时   会使用独立的 连接池类  替换mybatis 自带的    
+1.把连接池类 也交给 spring 来创建		使用 druid连接池
+2.SqlSessionFactory对象
+3.创建出dao对象
+
+需要学习的就是 上面三个对象的创建语法：使用xml的bean标签
+	步骤：
+	1.新建maven项目
+	2.加入maven依赖
+		1) spring依赖
+		2)mybatis依赖
+		3）mysql驱动
+		4）spring的事务依赖
+		5）mybatis和spring集成的依赖：mybatis 官方用的  	 用来在spring项目中创建mybatis的SqlSesissionFactory，dao对象
+	3，创建实体类
+	4,。创建dao接口和mapper文件
+	5.创建mybatis主配置文件
+	6.创建Service接口和实现类，属性是dao
+	7.创建spring的配置文件：声明mybatis的对象 交给spring创建		
+		1）数据源
+		2）SqlSessionFactory
+		3）Dao对象
+		4）声明自定义的service
+	8.创建测试类，获取Service对象，通过service调用dao完成数据库的访问
  
