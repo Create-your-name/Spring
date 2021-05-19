@@ -448,3 +448,101 @@ args 内就是方法的参数
 		4）声明自定义的service
 	8.创建测试类，获取Service对象，通过service调用dao完成数据库的访问
  
+Spring 的事务处理
+	1. 什么是事务
+		在mysql的时候 ，提出事务。事务 是指一组sql语句的集合 ，集合中 有 多条sql语句
+	我们希望sql语句成功  或者都失败  ，	这些 sql语句的执行 是一致的 作为一个整体执行。
+
+	2.在什么时候想到使用事务
+		当操作 涉及到多个表  或 多个sql语句的 执行 时  需要保证 语句 成功才能完成 功能  ，或者 都失败保证操作是符合要求的 
+	就使用事务
+	
+	在java代码中 写程序，控制事务，此时 事务放在哪里呢？	
+	service类的业务方法上，因为业务方法会调用多个dao方法，执行多个sql语句
+
+	3.通常使用JDBC访问数据库，还是mybatis访问数据库怎么处理事务
+		jdbc访问数据库  处理事务    Connection conn ; conn.commit();  conn.rollback();
+		mybatis 访问数据库 处理事务 SqlSession.commit ;  SqlSession.rollback();			
+	4. 3中 问题中事务的处理方式 ，有什么不足
+		1) 不同的数据库访问技术，处理事务的对象，方法不同，
+			需要了解不同数据库访问技术使用事务的原理
+		2）掌握多种数据库中 事务的处理逻辑。 什么时候提交事务 ， 什么时候回滚事务
+		3）处理事务的多种方法。
+
+		即：多种数据库的访问技术，有不同的事务处理的机制，对象，方法。
+		  
+	5.怎么解决不足
+	   spring提供一种处理事务的统一模型，能使用统一的步骤，方式 完成多种不同数据库访问技术的事务处理。
+	       使用spring的事务处理机制，可以完成    各种数据库（mybatis 。jdbc, hibernate）	访问数据库的事务处理。
+		即 spring的事务处理机制 包含了 各种技术 访问数据库处理事务 
+			将事务相关的资源和 内容提供给spring  spring会自动处理提交...等
+	6.处理事务，需要怎么做，做什么
+	  spring 处理事务的模型，和步骤都是固定的。把事务使用的信息提供给 spring
+		1)spring中 有 事务管理器  会 完成等   提交和回滚事务
+			事务管理器： （ 接口(PlatformTransactionManager) 和  实现类）
+				实现类：spring将 数据库访问技术 对应的事务处理类 创建完成
+					例：mybatis 访问数据库  --spring创建好的是DataSourceTransactionManager
+	使用方法：  
+		一。告诉spring 用的是哪个数据库访问技术    声明数据库访问技术对于的 事务管理器实现类  在 spring的配置文件中用bean声明
+			例如 声明mybatis <bean id=""  class="...DataSourceTransactionManager">
+
+		二。业务方法需要的事务 。说明事务的类型。
+		     说明方法需要的事务：
+			1）事务的隔离级别：有4个值	都是以  ISOLATION_开头
+				Mysql ：默认REPEATABLE_READ;   Oracle:READ_COMMITTED
+			READ_UNCOMMITTED:读未提交    不解决任何并发问题
+			READ_COMMITTED 读已提交。解决脏读 存在不可重复读和幻读
+			REPEATABLE_READ: 可重复读. 解决脏读  不可重复读  存在幻读
+			SERIALIZABLE: 串行化 。不存在并发问题	
+			2) 事务的超时时间：  表示一个方法最长的执行时间，如果方法执行时超过了事务的执行时间 事务就回滚 （单位：秒）
+				默认值为-1
+			3）事务的传播行为：控制 业务方法是不是有事务 ，是什么样的事务
+				七个传播行为，表示你的业务方法调用时 ，事务在方法之间是如何使用的
+					重点：
+					       PROPAGATION_REQUIRED		:  方法必须有事务    有事务加入到已有事务中
+						存在事务 就用事务 		不存在事务 则创建事务
+					       PROPAGATION_REQUIRES_NEW	：每次都是新建的事务  如存在事务则将事务挂起
+						新建事务
+					       PROPAGATION_SUPPORTS	：可以有事务 也可以没有事务
+			4)  spring  提交事务 和 回滚事务的时机
+				1）当业务方法 执行成功 没有异常抛出 则 方法执行完毕  spring 在方法执行后提交事务
+				2）当业务方法 抛出异常或ERROR  	spring执行回滚 调用事务管理器的rollback
+					运行时异常定义： RuntimeException    及子类   NullPoint   NumberFormat
+				3）当业务方法 抛出非运行时异常  ，主要是 受查异常   提交事务
+				受查异常：   写代码时  处理的异常： 例如IOException  	SqlException
+	
+		即：1）管理事务的是 事务管理区 即实现类
+		2）spring的事务是一个统一模型
+			2。1）指定要使用的事务管理器实现类  使用 <bean>、
+			2.2）指定哪些类，哪些方法需要加入事务的功能
+			2.3）指定方法需要的隔离级别 传播行为  超时
+
+
+	Spring 框架中 提供的事务处理方案
+		1.适合中小项目使用的 ，注解方案。
+			spring框架自己用aop实现给业务方法增加事务的功能，使用@Transactional 注解增加事务，
+			@Transaction注解 是spring框架自己注解  放在public 方法的上面  表示 该方法 有事务
+			可以给注解的属性赋值，表示具体的隔离级别，传播行为，异常信息等
+				可选择的 属性：（propagation  isolation readOnly timeout rollbackFor rollbackForClassName）
+				propagation ：事务传播属性
+				isolation ：事务隔离级别
+				readOnly： 用于设置方法是否是只读
+				timeout： 设置超时实现
+				rollbackFor： 指定需要回滚的异常类
+				rollbackForClassName：指定需要回滚的异常类 类名
+			  1.需要声明事务管理区 对象 
+				<bean id =“” class=“DataSourceTransactionManager”>
+			  2. 开启事务注解驱动，告诉spring框架，我要使用的注解的方式管理事务
+				spring 给aop机制 创建@Transactional所在类代理对象，给方法加入事务的功能
+			  spring 给业务加入事务：在业务方法执行前 开启事务，执行后 提交或回滚  使用AOP的环绕通知
+				@Around（）
+				objec   myAround 方法{
+					开启事务，spring自动开启
+					try{
+						buy（）方法
+						事务管理器。commit
+					}catch{
+						事务管理器。rollback（）
+					}
+				}
+			3.在方法上面加入注解
