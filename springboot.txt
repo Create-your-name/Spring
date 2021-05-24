@@ -1,0 +1,40 @@
+gitignor  项目中 被忽略的 以及 重要的后缀
+
+pom中  的代码：
+	modelversion  -maven 版本
+
+	org.springframework- 指定   spring- boot staatter-parent 
+			spring boot工程的父工程的 起步依赖  起步工程	版本号即是父工程版本号maven的多维化？
+
+	 /*spring-boot项目 启动入口类*/
+	    public static void main(String[] args) {
+
+	        SpringApplication.run(CmSpringbootFirstApplication.class, args);
+	
+	    }
+
+	/*spring boot 核心注解  主要开启 spring 自动配置的注解*/
+	@SpringBootApplication
+
+	在 resources 中：
+		static 存放的是 ：静态的 web资源  如 图片 cs  图标
+		 templates：存放的是 模板   模板是前段模板：如Thymeleaf
+		application.properties：spring_boot的核心配置文件
+
+	自动集成完毕springMVC
+
+	springboot   的项目代码 在 SpringBoot 项目入口main 的 同级或者下级目录
+
+在springboot的核心配置文件 application.properties 中
+	设置内嵌Tomcat端口号
+	 server.port="设置的端口号名"
+
+	设置上下文根：
+	server.servlet.context-path="设置的上下文根"		等等
+
+使用springboot框架的核心配置文件application.yml或者apolication.yaml	格式一样 就是后缀名不一 
+
+	在yml中：按照代码的 路径  以python类似的 制表符来控制一串代码  成为金字塔行  来控制 代码 
+		核心配置文件的 代码格式 不一样
+
+			
