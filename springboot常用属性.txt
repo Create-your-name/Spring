@@ -1,0 +1,23 @@
+spring-boot 的主配置文件例如 application.properties  中的属性
+	 server.prot   内嵌tomcat 	端口号
+	server.servlet.context-path=	设置上下文根
+
+在IndexController  的目录 后面目录中的 程序注解：
+	@Controller：用于标记一个类，使他标记的类就是一个SpingMVC Controller对象，即是一个控制器。
+
+	@RequestMapping（value = "标识符"） ： 一个用来处理请求地址映射的注解，可用于类或方法上。用于类上，表示类中的所有响应请求的方法都是以该地址作为父路径。
+
+	@ResponseBody  ： 的作用其实是将java对象转为json格式的数据。
+
+	@Value ("$ { properties 中的 属性名  } ")： 将springboot 中的 属性 赋值
+下一行        private  对应的 需要赋值的 属性名
+	在所需要的 代码中 用@Autowired   来赋值给 对象
+
+	@Component  将类 给spring 容器进行 管理
+
+	@ConfigurationProperties (profix = "在springboot 主配置文件中的 变量的 前缀") 设置为 核心配置类
+
+
+
+
+   

@@ -32,9 +32,33 @@ pom中  的代码：
 	设置上下文根：
 	server.servlet.context-path="设置的上下文根"		等等
 
-使用springboot框架的核心配置文件application.yml或者apolication.yaml	格式一样 就是后缀名不一 
+使用springboot框架的核心配置文件application.yml或者apolication.yaml	application.properties格式一样 就是后缀名不一 
 
 	在yml中：按照代码的 路径  以python类似的 制表符来控制一串代码  成为金字塔行  来控制 代码 
 		核心配置文件的 代码格式 不一样
 
-			
+	如果同时使用application.yml 和 applicatio.properties 的话 那么 以properties为准
+
+多环境下 核心配置文件（properties）的使用， 工作中开发环境等等 的不同 	如何让多种环境下 同时可以让代码实现 
+	分别创建好 各种环境对于的 配置文件 命名为：application-xx-properties	
+	后在 springboot主配置文件中
+					spring.profiles.active = xx
+	想切换 环境 只需要 改 对于环境的 properties 前面的xx  
+	给 springboot 主配置文件中的spring.profiles.avtive 赋值就行
+
+
+多环境下 核心配置文件 (yml )	的使用，   同理
+
+springboot在 核心配置文件application,properties自定义配置：
+	使用Value ( $ { } ): 来给springboot 主配置文件赋值
+	springboot在核心配置文件中 将自定义配置映射到 一个 对象：
+		使用Value ( $ { } ): 来给springboot 主配置文件赋值
+
+				用@Autowired  
+				下一行	private   声明属性   赋值给对象
+
+spring boot 核心配置文件  有中文信息 会出现乱码的 话：
+	一般不建议出现中文
+	如果有 没办法省略  可以转换为ASCII 码
+
+				
