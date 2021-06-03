@@ -50,12 +50,17 @@ pom中  的代码：
 多环境下 核心配置文件 (yml )	的使用，   同理
 
 springboot在 核心配置文件application,properties自定义配置：
-	使用Value ( $ { } ): 来给springboot 主配置文件赋值
-	springboot在核心配置文件中 将自定义配置映射到 一个 对象：
-		使用Value ( $ { } ): 来给springboot 主配置文件赋值
 
-				用@Autowired  
-				下一行	private   声明属性   赋值给对象
+	在代码中能够获取 application.properties 中定义的值
+		使用Value ( $ { } ): 来给springboot 主配置文件赋值
+		
+	springboot 核心配置文件 定义的对象的属性  如shcool.name  就是shcool 对象的 name属性
+		springboot在核心配置文件中 将自定义配置映射到 一个 对象：
+			在对象类的 上层 加上@Conponent  // 将对象类 交给spring 容器处理
+				在加上      @ConfigurationProperties (profix =  "shcool "  // 配置文件中定义的对象的名称)
+	
+					再用@Autowired	 注入到其他类中  
+					下一行	private   声明属性   赋值给对象
 
 spring boot 核心配置文件  有中文信息 会出现乱码的 话：
 	一般不建议出现中文
@@ -99,3 +104,71 @@ SpringBoot  整合mybatis
 	在mybatis 逆向工程之中  使用封装类型  就避免了 "" 这种的判断  自动就判断成了 null  所以只需要考虑  不为null即可
 
 	在Dao接口上需要增加@Mapper   要不然 业务层访问不到
+
+	继承mybatis  最主要的就是 @Mapper  @MapperScan 
+		@Mapper  需要在每一个Mapper 接口类上添加 作用是 扫描dao接口		Dao接口上面加   让启动类可以扫描到 接口内方法
+		@MapperScan 需要在SpringBoot启动入口类上添加 它扫描所有的包	在 启动类上面添加 扫描包  扫描同级以及下级
+	关于 Mapper 映射文件的 存放的 位置 有  ： 
+	1. 将Mapper接口和 映射文件 存放到 一个 目录下 ，在 pom指定 资源文件夹的 路径 resources
+
+	2.将Mapper 接口和 Mapper 映射文件分开放 
+		Mapper接口类存放到 src/main/java 目录下
+		Mapper 映射文件 存放到 resources 类路径下
+		在springboot 核心配置文件指定 mapper映射文件存放的位置
+
+	集成玩 mybatis 后   springboot项目下使用事务
+		事务是一个完整的功能   也是一个完整的业务
+			PS  :  数据库的 SQL语句 有 DML数据操纵语句  DQL数据查询语句  DDL数据定义语句  TCL事务控制语句  DCL数据控制语句  
+		事务只和   DML 语句有关   只和 增删改 有关 
+
+		在定义的 Service 层 方法上面 加上 @Transactional  可以让改方法加入事务	
+	@EnableTransactionManagement  开启事务注解
+
+
+	springboot   集成 springMVC
+		  在控制层 的类上面  写 @Contorller  代表是控制层    所指的方法 需要加上  @ResponseBody 
+		  在 控制层的 类上面 写 @RestController  相当于  上面的 @Contorller   和每个方法都加上了@ResponseBody 
+			意味着  当前控制层 的所有方法 返还的都是JSON对象 
+				JSON对象  ：一种轻量级的 数据交换格式	数据以键 值对的形式保存  
+
+		@RequestMapping   注解在某个方法 上面时  默认是 请求方式 是 支持 GET 和 POST 请求的
+			如果只能用 GET 或者 POST  则 在 @RequestMapping中（value=“” ，method =RequestMethod.GET  或者  RequestMethod.POST）
+			使用   (Postman  )	来测试接口是post  还是 get  通过浏览器的数据都默认是get
+		只 支持 GET方法  相当于  @GetMapping ( value  =  " ")	//该注解通常在 查询数据的时候使用
+			如果请求方式不对 会报405错误 
+		同理 只支持POST    除了用 @RequestMapping   还能用   @PostMapping (value = “ ”)
+			// 该注解 通常在 新增数据的时候使用  
+		@DeleteMapping （value = “”）	// 做删除操作
+		@PutMapping （value = " " ）	//加入操作
+	SpringBoot 集成RESTful
+		RESTful： 提出一组客户端和服务器交互的 架构理念   使设计的接口 更简洁 更加有层次
+			例如： http://localhos;8080/boot/order?id=1021&status=1
+				使用RESTFul  风格后 则 地址为  http://localhos;8080/boot/order/1021/1
+		SpringBoot 开发 RESTFul  主要是通过 注解实现
+			1. @PathVariable   获取 url中的数据     （最主要的注解）
+			2. @PostMapping  等等 上面的 Mapping 注解
+			使用： @RequestMapping （value =“/student/detail/{id}/{age}}”）
+			将请求参数  放到请求路径里面去了
+				然后在方法中   例如 ： public object student1 （@PathVariable（“id”）Integer id
+								        @PathVariable （“age”）Integer age）
+				在方法体中：            {	Map<String,Object> retMap =new HashMap<>();
+							retMap.put("id",id)
+							retMap.put("age",age)
+						return retMap; 	通过 PathVariable 中的 注解 来获取 请求路径里面的值}
+	ctrl +shift +Y 使用翻译	在类中  如果有多个 相同的  public object student1 （@PathVariable（“id”）Integer id
+								        @PathVariable （“age”）Integer age）
+						参数类型
+					就可以通过 @PutMapping  等来区分 方法的 类型		
+					或者修改请求路径
+					RESUful  请求风格要求路径中 最好都是名词  不可以出现动词
+
+	 17.springMvc中  常见的其他注解  
+	 18。springboot使用 RESTful风格
+	 19. springboot集成Redis 
+		1.添加操作 redis 数据类型的依赖
+		2.在springboot核心配置文件中添加redis的配置
+			在 spring boot主配置文件中   application.properties 配置 redis配置文件
+				spring.redis.host =192.168.154.128
+				spring.redis.post =6379
+				spring.redis.password=123456
+			
